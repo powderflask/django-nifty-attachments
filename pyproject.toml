@@ -4,9 +4,9 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "nifty_attachments"
+name = "django-nifty-attachments"
 version = "0.1.0"
-requires-python = ">=3.7, <4.0"
+requires-python = ">=3.10, <4.0"
 description = "A generic set of template tags to attach files to specific models."
 readme = "README.md"
 license = {file = "LICENSE"}
@@ -47,9 +47,9 @@ utils = [
     "tox",
     "invoke",
     "bumpver",
+    "pip-tools",
     "build",
     "twine",
-    "pip-tools",
 ]
 
 [project.urls]
@@ -87,34 +87,3 @@ target-version = ["py38","py39","py310","py311"]
 [tool.isort]
 profile = "black"
 skip_gitignore = true
-
-[tool.tox]
-requires = ["tox>=4.19"]
-env_list = ["py3.10-django{32, 42}", "format", "lint", "coverage"]
-
-[tool.tox.labels]
-static = ["format", "lint"]
-
-[tool.tox.env_run_base]
-description = "Run tests with pytest."
-deps = ["[test]"]
-commands = [
-    ["pytest" ,"{posargs}"]
-]
-
-[tool.tox.pytest]
-DJANGO_SETTINGS_MODULE = "tests.testapp.settings"
-python_files = ["tests.py", "test_*.py", "*_test.py"]
-
-#[tool.tox.env.coverage]
-#description = "Generate test coverage report with pytest-cov."
-#deps = ["[test]"]
-#commands = [["pytest --cov=tests {posargs}"]]
-#
-#[tool.tox.env.format]
-#description = "Check source code style with black and isort."
-#skip_install = true
-#deps = ["black", "isort"]
-#commands =
-#    black --check --diff nifty_attachments tests {posargs}
-#    isort --check --diff nifty_attachments tests {posargs}

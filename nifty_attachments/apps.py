@@ -6,4 +6,4 @@ from django.utils.translation import gettext_lazy as _
 
 class AttachmentsConfig(AppConfig):
     name = "nifty_attachments"
-    verbose_name = _("Nifty Attachments")
+    verbose_name = _("Attachments")

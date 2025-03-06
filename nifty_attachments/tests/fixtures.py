@@ -1,13 +1,17 @@
 """
     Test fixtures
 """
+
 import importlib
-from django.views.generic import View
+
 import pytest
 import pytest_django.fixtures
+from django.views import View
+
 import nifty_attachments.settings
 from nifty_attachments.utils import get_permission_for_model
-from tests.factories import GizmoAttachmentFactory, UserFactory, UuidAttachmentFactory
+
+from .factories import GizmoAttachmentFactory, UserFactory, UuidAttachmentFactory
 
 
 class NoView(View):
@@ -21,7 +25,7 @@ def url_conf(settings):
     # Hack - add minimal DVM urls to allow the test suite to run in context of DVM project.  Remove when factored out.
     from django.urls import include, path
 
-    from tests.testapp.urls import urlpatterns
+    from nifty_attachments.tests.testapp.urls import urlpatterns
 
     urlconf = lambda: None
     urlconf.urlpatterns = urlpatterns + [

@@ -13,7 +13,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_GET, require_POST
 
-from tests.htmx_clone.middleware import queue_poll_messages, require_DELETE, require_PUT
+from nifty_attachments.tests.htmx_clone.middleware import queue_poll_messages, require_DELETE, require_PUT
 
 from . import forms, models, utils
 

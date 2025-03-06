@@ -11,10 +11,10 @@ def clean(c, docs=False):
         docs_task.clean(c)
 
 
-@task(pre=[clean, docs_task.clean], post=[clean_task.clean_all])
+@task(pre=[clean], post=[clean_task.clean_all])
 def build(c, docs=False):
     """ Clean up and build a new distribution [and docs] """
-    c.run("python -m build")
+    c.run("python3 -m build")
     if docs:
         docs_task.build(c)
 

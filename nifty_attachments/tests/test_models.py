@@ -1,6 +1,6 @@
 import pytest
 
-from nifty_attachments.utils import get_permission_for_model
+from ..utils import get_permission_for_model
 from .factories import GizmoAttachmentFactory, UuidAttachmentFactory
 from .fixtures import add_perm
 
