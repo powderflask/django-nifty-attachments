@@ -2,7 +2,7 @@
 
 
 [![PyPI Version](https://img.shields.io/pypi/v/nifty_attachments.svg)](https://pypi.python.org/pypi/nifty_attachments)
-[![Tests](https://github.com/powderflask/nifty_attachments/actions/workflows/pytest.yaml/badge.svg)](https://github.com/powderflask/nifty_attachments/actions/workflows/pytest.yaml)
+[![Tests](https://github.com/powderflask/nifty_attachments/actions/workflows/pytest.yaml/badge.svg)](https://github.com/powderflask/nifty_attachments/.github/workflows/pytest.yaml)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/powderflask/nifty_attachments)
 
 
