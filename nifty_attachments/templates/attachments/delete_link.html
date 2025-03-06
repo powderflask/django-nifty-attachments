@@ -1,0 +1,5 @@
+{% load i18n %}
+
+{% if delete_url %}
+  <a class="delete-attachment" href="{{ delete_url }}?next={{ next }}">{% translate "Delete attachment" %}</a>
+{% endif %}

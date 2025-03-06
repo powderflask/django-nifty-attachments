@@ -1,0 +1,6 @@
+{# Render attachments for a related object as table rows #}
+{% load attachments_tags %}
+
+{% for attachment in object|attachment_set %}
+  {% include "attachments/htmx/as_table_row.html" %}
+{% endfor %}

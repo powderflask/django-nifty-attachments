@@ -1,0 +1,15 @@
+{% load i18n %}
+
+{% if form %}
+  <form method="post"
+        enctype="multipart/form-data"
+        action="{{ action_url }}"
+        class="add-attachment">
+    {% csrf_token %}
+    {% if next %}<input type="hidden" name="next" value="{{ next }}" />{% endif %}
+    {{ form.as_p }}
+    <p class="submit">
+      <input type="submit" value="{% translate "Add attachment" %}" />
+    </p>
+  </form>
+{% endif %}

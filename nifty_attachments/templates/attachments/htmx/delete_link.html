@@ -1,0 +1,12 @@
+{% if delete_url %}
+  <span class="delete-attachment btn"
+        title="Delete Attachment"
+        data-hn-tooltip="Permanently delete the Attachment"
+        hx-confirm="Are you sure? Attachment will be permanently deleted."
+        hx-delete="{{ delete_url }}">
+    <span class="fas fa-trash"></span>
+    <span class="sr-only">Delete</span>
+    <span class="htmx-indicator spinner-border spinner-border-sm"
+          style="display:inherit">{# css setting display:none somewhere, but interaction controlled with opacity? #}</span>
+  </span>
+{% endif %}
