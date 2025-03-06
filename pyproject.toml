@@ -1,0 +1,120 @@
+# Project Configuration
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nifty_attachments"
+version = "0.1.0"
+requires-python = ">=3.7, <4.0"
+description = "A generic set of template tags to attach files to specific models."
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    { name = "Joseph Fall", email = "jfall@crgl.ca" }
+]
+keywords = ["nifty_attachments",]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    "Framework :: Django",
+]
+dependencies = [
+    "django",
+]
+
+[project.optional-dependencies]
+format = [
+    "black",
+    "isort",
+]
+lint = [
+    "flake8",
+    "flake8-bugbear",
+]
+test = [
+    "pytest",
+    "factory_boy",
+    "pytest-django",
+    "django_htmx",
+    "pytest-sugar",
+    "pytest-cov",
+]
+utils = [
+    "tox",
+    "invoke",
+    "bumpver",
+    "build",
+    "twine",
+    "pip-tools",
+]
+
+[project.urls]
+Homepage = "https://github.com/powderflask/nifty_attachments"
+Repository = "https://github.com/powderflask/nifty_attachments"
+
+[project.scripts]
+"manage.py" = "nifty_attachments:django_manage"
+
+
+# Other Tools
+[tool.setuptools]
+include-package-data = true  # True by default, declarations in MANIFEST.in
+
+[tool.setuptools.packages.find]
+include = ["nifty_attachments", "nifty_attachments.*"]
+
+[tool.bumpver]
+current_version = "0.1.0"
+version_pattern = "MAJOR.MINOR.PATCH"
+commit_message = "Bump version: {old_version} --> {new_version}"
+commit = true
+tag = true
+push = true
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = ['version = "{version}"']
+"README.md" = ['Version: {version}']
+"nifty_attachments/__init__.py" = ['__version__ = "{version}"']
+"docs/source/conf.py" = ["version = '{version}'", "release = '{version}'"]
+
+[tool.black]
+target-version = ["py38","py39","py310","py311"]
+
+[tool.isort]
+profile = "black"
+skip_gitignore = true
+
+[tool.tox]
+requires = ["tox>=4.19"]
+env_list = ["py3.10-django{32, 42}", "format", "lint", "coverage"]
+
+[tool.tox.labels]
+static = ["format", "lint"]
+
+[tool.tox.env_run_base]
+description = "Run tests with pytest."
+deps = ["[test]"]
+commands = [
+    ["pytest" ,"{posargs}"]
+]
+
+[tool.tox.pytest]
+DJANGO_SETTINGS_MODULE = "tests.testapp.settings"
+python_files = ["tests.py", "test_*.py", "*_test.py"]
+
+#[tool.tox.env.coverage]
+#description = "Generate test coverage report with pytest-cov."
+#deps = ["[test]"]
+#commands = [["pytest --cov=tests {posargs}"]]
+#
+#[tool.tox.env.format]
+#description = "Check source code style with black and isort."
+#skip_install = true
+#deps = ["black", "isort"]
+#commands =
+#    black --check --diff nifty_attachments tests {posargs}
+#    isort --check --diff nifty_attachments tests {posargs}

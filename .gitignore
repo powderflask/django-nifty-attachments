@@ -1,0 +1,29 @@
+# JetBrains
+.idea/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+# Distribution / packaging
+venv/
+*.egg-info/
+build/
+dist/
+
+# Unit test / coverage reports
+.tox/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Sphinx documentation
+docs/build/
+docs/_static/
+docs/_templates/
+
+# Django databases
+db.sqlite3
+
+# Project files
+# Add specific project files to be ignored here
+/uv.lock
