@@ -29,7 +29,7 @@ def url_conf(settings):
 
     urlconf = lambda: None
     urlconf.urlpatterns = urlpatterns + [
-        # path("dvm/", include("dvm.urls")),
+        # path("dvm/", include("dvm.urls")),  # TODO: ensure testing is sufficient without dvm.urls
         path("messages/", NoView.as_view(), name="messages"),  # messages route exists in 'base.html', so its faked
     ]
     settings.ROOT_URLCONF = urlconf
