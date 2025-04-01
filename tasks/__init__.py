@@ -1,5 +1,8 @@
-from invoke import task, Collection
-from . import clean, deps, docs, pypi
+from invoke import Collection
 
+from . import clean, deps, docs, pypi, tox
+from .utils import run_act
 
-namespace = Collection(clean, deps, docs, pypi)
+namespace = Collection(
+    clean, deps, docs, tox, pypi, run_act
+)

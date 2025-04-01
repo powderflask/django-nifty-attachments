@@ -1,0 +1,39 @@
+# Invoke Configuration File
+#
+# docs:
+#   To enable docs related tasks, set `enabled` to `True`
+#   NOTE: some docs tasks require a `MAKEFILE` and `make.bat` to be present in the directory shown in `dir`
+
+docs:
+  enabled: False
+  dir: docs/
+
+clean:
+  build:
+    cleans: build artifacts
+    paths:
+      - "build/"
+      - "dist/"
+      - ".eggs/"
+      - "*.egg-info"
+      - "*.egg"
+
+  cache:
+    cleans: Python files
+    paths:
+      - "__pycache__/"
+      - ".pytest-cache/"
+      - "*.py[co]"
+      - "*~"
+
+  test:
+    cleans: test/coverage artifacts
+    paths:
+      - "htmlcov/"
+      - ".pytest_cache/"
+      - ".coverage"
+
+  tox:
+    cleans: tox directory
+    paths:
+      - ".tox/"
