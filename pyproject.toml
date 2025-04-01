@@ -24,6 +24,7 @@ classifiers = [
 ]
 dependencies = [
     "django",
+    "factory_boy",
 ]
 
 [project.optional-dependencies]
@@ -37,7 +38,6 @@ lint = [
 ]
 test = [
     "pytest",
-    "factory_boy",
     "pytest-django",
     "django_htmx",
     "pytest-sugar",
