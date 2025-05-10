@@ -1,14 +1,14 @@
 # django-nifty-attachments
 
 
-[![PyPI Version](https://img.shields.io/pypi/v/nifty_attachments.svg)](https://pypi.python.org/pypi/nifty_attachments)
-[![Tests](https://github.com/powderflask/nifty_attachments/actions/workflows/pytest.yaml/badge.svg)](https://github.com/powderflask/nifty_attachments/.github/workflows/pytest.yaml)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/powderflask/nifty_attachments)
+[![PyPI Version](https://img.shields.io/pypi/v/django-nifty-attachments.svg)](https://pypi.python.org/pypi/django-nifty-attachments)
+[![Tests](https://github.com//actions/workflows/pytest.yaml/badge.svg)](https://github.com/powderflask/django-nifty-attachments/tree/main/.github/workflows/tox.yaml)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/powderflask/django-nifty-attachments)
 
 
 Version: 0.1.0
 
-*"Private" file attachments for an Django Model, with permissions-based access control and without Generic FK.*
+*"Private" file attachments for a Django Model, with permissions-based access control and without Generic FK.*
 
 > django-nifty-attachments is free software distributed under the MIT License.
 
@@ -257,7 +257,7 @@ Settings
 
 ---
 ### Acknowledgments
-This project would be impossible to maintain without the help of our generous [contributors](https://github.com/powderflask/nifty_attachments/graphs/contributors)
+This project would be impossible to maintain without the help of our generous [contributors](https://github.com//graphs/contributors)
 
 #### Technology Colophon
 
@@ -266,42 +266,9 @@ Without django and the django dev team, the universe would have fewer rainbows a
 This package was originally created with [`cookiecutter`](https://www.cookiecutter.io/) 
 and the [`cookiecutter-powder-pypackage`](https://github.com/JacobTumak/CookiePowder) project template.
 
+---
 
-## For Developers
-   ```bash
-   $  pip install -r reqirements_dev.txt
-   ```
+## Developing?
+Check out the [Dev Guide](https://github.com/powderflask/django-nifty-attachments/tree/main/dev-guide.md).
 
-### Tests
-   ```bash
-   $ pytest
-   ```
-or
-   ```bash
-   $ tox
-   ```
-
-### Code Style / Linting
-   ```bash
-   $ isort
-   $ black
-   $ flake8
-   ```
-
-### Versioning
- * [Semantic Versioning](https://semver.org/)
-   ```bash
-   $ bumpver show
-   ```
-
-### Docs
- * [Sphinx](https://www.sphinx-doc.org/en/master/) + [MyST parser](https://myst-parser.readthedocs.io/en/latest/intro.html)
- * [Read The Docs](https://readthedocs.org/projects/nifty_attachments/)
-
-### Build / Deploy Automation
- * [invoke](https://www.pyinvoke.org/)
-   ```bash
-   $ invoke -l
-   ```
- * [GitHub Actions](https://docs.github.com/en/actions) (see [.github/workflows](https://github.com/powderflask/nifty_attachments/tree/master/.github/workflows))
- * [GitHub Webhooks](https://docs.github.com/en/webhooks)  (see [settings/hooks](https://github.com/powderflask/nifty_attachments/settings/hooks))
+ * [GitHub Actions](https://docs.github.com/en/actions) (see [.github/workflows](https://github.com/powderflask/django-nifty-attachments/tree/main/.github/workflows))

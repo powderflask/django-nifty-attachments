@@ -53,8 +53,8 @@ utils = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/powderflask/nifty_attachments"
-Repository = "https://github.com/powderflask/nifty_attachments"
+Homepage = "https://github.com/powderflask/django-nifty-attachments"
+Repository = "https://github.com/powderflask/django-nifty-attachments"
 
 [project.scripts]
 "manage.py" = "nifty_attachments:django_manage"
