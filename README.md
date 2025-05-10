@@ -1,7 +1,7 @@
 # django-nifty-attachments
 
 
-[![PyPI Version](https://img.shields.io/pypi/v/django-nifty-attachments.svg)](https://pypi.python.org/pypi/django-nifty-attachments) [![Test with pytest](https://github.com/actions/workflows/pytest.yaml/badge.svg)](https://github.com/powderflask/django-nifty-attachments/tree/main/.github/workflows/pytest.yaml/badge.svg) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/powderflask/django-nifty-attachments)
+[![PyPI Version](https://img.shields.io/pypi/v/django-nifty-attachments.svg)](https://pypi.python.org/pypi/django-nifty-attachments) ![Test with pytest](https://github.com/powderflask/django-nifty-attachments/actions/workflows/pytest.yaml/badge.svg) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/powderflask/django-nifty-attachments)
 
 
 Version: 0.1.0
