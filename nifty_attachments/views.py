@@ -13,7 +13,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_GET, require_POST
 
-from nifty_attachments.tests.htmx_clone.middleware import queue_poll_messages, require_DELETE, require_PUT
+from hn.helpers.views.decorators import message_poll_request
+from shared.htmx.middleware import queue_poll_messages, require_DELETE, require_PUT
 
 from . import forms, models, utils
 
@@ -28,6 +29,7 @@ class AttachmentViewMixin:
     @property
     def next(self):
         next_ = self.request.GET.get("next", self.request.POST.get("next", None))  # noqa
+        queue_poll_messages(self.request)
         try:
             return next_ or self.related_obj.get_absolute_url() or "/"
         except AttributeError:
@@ -117,6 +119,7 @@ def download_attachment(request, pk, model: str | type[models.AbstractAttachment
     return response
 
 
+@message_poll_request
 @require_GET
 @login_required
 @prefix_template("attachments/list.html")
@@ -141,6 +144,7 @@ def list_attachments(
     return render(request, template_name, template_context)
 
 
+@message_poll_request
 @require_PUT
 @login_required
 @prefix_template("attachments/upload.html")
@@ -165,7 +169,7 @@ def update_attachment(
     form = form_class(request.POST, request.FILES)
     if form.is_valid():
         form.save()
-        messages.success(queue_poll_messages(request), _("Your attachment was updated."))
+        messages.success(request, _("Your attachment was updated."))
         return redirect(view.next)
 
     # TODO: always return HTML.  Error code?
@@ -194,5 +198,5 @@ def delete_attachment(request, pk, model: str | type[models.AbstractAttachment],
         return view.invalid_request()
 
     view.attachment.delete()
-    messages.success(queue_poll_messages(request), _("Your attachment was deleted."))
+    messages.success(request, _("Your attachment was deleted."))
     return redirect(view.next)
