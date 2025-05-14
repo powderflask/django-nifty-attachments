@@ -1,7 +1,11 @@
 name: Test with tox
 
 on:
-  - push
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    types: ["opened", "reopened"]
+  tags: ["*.*.*"]
 
 jobs:
   run-tox:
