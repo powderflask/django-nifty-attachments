@@ -1,22 +1,27 @@
-from dataclasses import dataclass
 from functools import cached_property, wraps
+from dataclasses import dataclass
 from http import HTTPStatus
 from pathlib import Path
 
 from django import http
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
 from django.forms import Form, ModelForm
-from django.http import HttpRequest, HttpResponseBadRequest, JsonResponse
-from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext as _
-from django.views.decorators.http import require_GET, require_POST
+from django.core.exceptions import PermissionDenied
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect, render
+from django.http import HttpRequest, HttpResponseBadRequest, JsonResponse
+from django.views.decorators.http import require_GET, require_POST, require_http_methods
 
-from hn.helpers.views.decorators import message_poll_request
-from shared.htmx.middleware import queue_poll_messages, require_DELETE, require_PUT
 
 from . import forms, models, utils
+
+
+require_PUT = require_http_methods(["PUT"])
+require_PUT.__doc__ = "Decorator to require that a view only accepts the PUT method."
+
+require_DELETE = require_http_methods(["DELETE"])
+require_DELETE.__doc__ = "Decorator to require that a view only accepts the DELETE method."
 
 
 @dataclass
@@ -29,7 +34,6 @@ class AttachmentViewMixin:
     @property
     def next(self):
         next_ = self.request.GET.get("next", self.request.POST.get("next", None))  # noqa
-        queue_poll_messages(self.request)
         try:
             return next_ or self.related_obj.get_absolute_url() or "/"
         except AttributeError:
@@ -119,7 +123,6 @@ def download_attachment(request, pk, model: str | type[models.AbstractAttachment
     return response
 
 
-@message_poll_request
 @require_GET
 @login_required
 @prefix_template("attachments/list.html")
@@ -144,7 +147,6 @@ def list_attachments(
     return render(request, template_name, template_context)
 
 
-@message_poll_request
 @require_PUT
 @login_required
 @prefix_template("attachments/upload.html")
