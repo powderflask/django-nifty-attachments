@@ -21,15 +21,15 @@ class NoView(View):
 
 @pytest.fixture(autouse=True)
 def url_conf(settings):
-    # settings.ROOT_URLCONF = "nifty_attachments.tests.testapp.urls"
+    # settings.ROOT_URLCONF = "tests.testapp.urls"
     # Hack - add minimal DVM urls to allow the test suite to run in context of DVM project.  Remove when factored out.
     from django.urls import include, path
 
-    from nifty_attachments.tests.testapp.urls import urlpatterns
+    from tests.testapp.urls import urlpatterns
 
     urlconf = lambda: None
     urlconf.urlpatterns = urlpatterns + [
-        # path("dvm/", include("dvm.urls")),  # TODO: ensure testing is sufficient without dvm.urls
+        # path("dvm/", include("dvm.urls")),
         path("messages/", NoView.as_view(), name="messages"),  # messages route exists in 'base.html', so its faked
     ]
     settings.ROOT_URLCONF = urlconf

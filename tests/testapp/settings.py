@@ -49,11 +49,11 @@ DATABASES["default"].update(
     }
 )
 
-ROOT_URLCONF = "nifty_attachments.tests.testapp.urls"
+ROOT_URLCONF = "tests.testapp.urls"
 
 INSTALLED_APPS = [
     "nifty_attachments.apps.AttachmentsConfig",
-    "nifty_attachments.tests.testapp.apps.AttachmentsTestappConfig",
+    "tests.testapp.apps.AttachmentsTestappConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -91,4 +91,4 @@ TEMPLATES = [
 ]
 
 # Configure testapp Attachment settings
-ATTACHMENTS_FILE_UPLOAD_VALIDATORS = "nifty_attachments.tests.testapp.validators.testapp_validators"
+ATTACHMENTS_FILE_UPLOAD_VALIDATORS = "tests.testapp.validators.testapp_validators"
