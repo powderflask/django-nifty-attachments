@@ -1,6 +1,5 @@
 from functools import cached_property, wraps
 from dataclasses import dataclass
-from http import HTTPStatus
 from pathlib import Path
 
 from django import http
@@ -10,7 +9,7 @@ from django.utils.translation import gettext as _
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
-from django.http import HttpRequest, HttpResponseBadRequest, JsonResponse
+from django.http import HttpRequest, HttpResponseBadRequest
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
 
 
@@ -94,9 +93,6 @@ def add_attachment(
         messages.success(request, _(f"Your attachment was uploaded and attached to {view.related_obj}."))
         return redirect(view.next)
 
-    if request.headers.get("X-Return-Form-Errors", None):
-        return JsonResponse(form.errors, status=HTTPStatus.BAD_REQUEST)
-
     template_context = {
         "form": form,
         "action_url": view.model.get_upload_url_for_obj(view.related_obj),
@@ -173,10 +169,6 @@ def update_attachment(
         form.save()
         messages.success(request, _("Your attachment was updated."))
         return redirect(view.next)
-
-    # TODO: always return HTML.  Error code?
-    if request.headers.get("X-Return-Form-Errors", None):
-        return JsonResponse(form.errors, status=HTTPStatus.BAD_REQUEST)
 
     template_context = {
         "form": form,
