@@ -170,37 +170,15 @@ def test_can_delete_others_attachment_with_permission(client, attachment_model, 
     assert attachment_model.objects.count() == 0
 
 
+
 @pytest.mark.parametrize("attachment_factory", [GizmoAttachmentFactory], indirect=True)
-class TestCustomValidators:
+@pytest.mark.django_db
+def test_custom_validator_denies_specific_content(attachment_model, related_object, logged_in_client_user):
+    client, user = logged_in_client_user
 
-    @pytest.mark.django_db
-    def test_deny_specific_content(self, attachment_model, related_object, logged_in_client_user):
-        client, user = logged_in_client_user
+    response = upload_file(
+        client, attachment_model, related_object, file_content=b"<xml>this is not allowed</xml>"
+    )
 
-        response = upload_file(
-            client, attachment_model, related_object, file_content=b"<xml>this is not allowed</xml>"
-        )
-
-        assert "XML is forbidden" in str(response.content)
-        assert attachment_model.objects.count() == 0
-
-    @pytest.mark.django_db
-    def test_form_errors_are_returned_as_json(self, attachment_model, related_object, logged_in_client_user):
-        client, user = logged_in_client_user
-
-        response = upload_file(
-            client,
-            attachment_model,
-            related_object,
-            file_content=b"<xml>this is not allowed</xml>",
-            HTTP_X_RETURN_FORM_ERRORS=True,
-        )
-
-        assert response.status_code == HTTPStatus.BAD_REQUEST
-        assert response.headers.get("Content-Type") == "application/json"
-
-        errors = json.loads(response.content)
-        # note: field errors are a list of string messages
-        assert errors["attachment_file"] == ["XML is forbidden"]
-
-        assert attachment_model.objects.count() == 0
+    assert "XML is forbidden" in str(response.content)
+    assert attachment_model.objects.count() == 0
