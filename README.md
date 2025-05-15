@@ -8,7 +8,9 @@ Version: 0.1.0
 
 *"Private" file attachments for a Django Model, with permissions-based access control and without Generic FK.*
 
-> django-nifty-attachments is free software distributed under the MIT License.
+> This package is built on top of [django-attachments](https://github.com/atodorov/django-attachments), originally developed by [atadorov](https://github.com/atodorov).
+
+> `django-nifty-attachments` is free software distributed under the MIT License.
 
 
 
