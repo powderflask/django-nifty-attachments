@@ -6,8 +6,7 @@
   <td class="download"
       _="on toggle_form toggle .hidden on .alternate in me on update_report_label put #id_label-{{ attachment.pk }}.value into <.report-label a/> in me">
     <span class="text-secondary fas fa-paperclip"></span>
-    <span class="report-label alternate"
-          {% if attachment.description %}data-hn-tooltip="{{ attachment.description }}"{% endif %}>
+    <span class="report-label alternate">
       <a href="{{ attachment.get_download_url }}"
          title="Download {{ attachment.content_type }} Attachment">{{ attachment.label }}</a>
     </span>
