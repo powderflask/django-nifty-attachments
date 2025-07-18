@@ -1,0 +1,15 @@
+{# htmx file upload tool - simulates drag and drop - makes htmx post to upload the file #}
+{% load attachments_tags %}
+{# fmt:off #}
+{% if request.user|can_add_attachment:object %}
+  <form method="post"
+	      action='{{ object|attachment_upload_url }}'>
+    {% csrf_token %}
+    <input type="file"
+           name="attachment_file"
+           required=""
+           accept=".pdf,image/*,text/plain"
+           id="id_attachment_file"/>
+      <button type="submit" class="btn btn-primary">Upload Attachment</button>
+  </form>
+{% endif %}

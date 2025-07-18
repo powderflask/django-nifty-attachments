@@ -1,0 +1,26 @@
+{# a single row in a table of file attachments with hx-delete and hx-patch (edit label) #}
+{% load attachments_tags permission_tags %}
+
+{% for attachment in object|attachment_set %}
+	<tr>
+	  <td>
+	    <a href="{{ attachment.get_download_url }}"
+	       title="Download {{ attachment.content_type }} Attachment">Download {{ attachment.label }}</a>
+	  </td>
+		<td>
+	    <form style="display: inline-block" action='{{ attachment.get_update_label_url }}' method="post">
+	      {% csrf_token %}
+	      <input name="label"
+	             required=""
+	             id="id_label-{{ attachment.pk }}"
+	             value="Change Label" />
+	      <button type="submit" class="btn btn-primary">Save</button>
+	    </form>
+	  </td>
+	  <td>
+	    {% if request.user|can_delete_attachment:attachment %}
+	      {% attachment_delete_link attachment %}
+	    {% endif %}
+	  </td>
+	</tr>
+{% endfor %}
