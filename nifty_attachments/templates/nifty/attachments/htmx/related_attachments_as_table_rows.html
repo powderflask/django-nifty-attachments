@@ -2,5 +2,5 @@
 {% load attachments_tags %}
 
 {% for attachment in object|attachment_set %}
-  {% include "attachments/htmx/as_table_row.html" %}
+  {% include "nifty/attachments/htmx/as_table_row.html" %}
 {% endfor %}

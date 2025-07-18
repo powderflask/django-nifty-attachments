@@ -72,7 +72,7 @@ def prefix_template(default_template_name):
 
 @require_POST
 @login_required
-@prefix_template("attachments/add.html")
+@prefix_template("nifty/attachments/add.html")
 def add_attachment(
     request,
     pk,
@@ -121,7 +121,7 @@ def download_attachment(request, pk, model: str | type[models.AbstractAttachment
 
 @require_GET
 @login_required
-@prefix_template("attachments/list.html")
+@prefix_template("nifty/attachments/list.html")
 def list_attachments(
     request,
     pk,
@@ -145,7 +145,7 @@ def list_attachments(
 
 @require_PUT
 @login_required
-@prefix_template("attachments/upload.html")
+@prefix_template("nifty/attachments/upload.html")
 def update_attachment(
     request,
     pk,

@@ -8,7 +8,7 @@ from ..utils import get_attachment_model_from_related_object
 register = Library()
 
 
-@register.inclusion_tag("attachments/add_form.html", takes_context=True)
+@register.inclusion_tag("nifty/attachments/add.html", takes_context=True)
 def attachment_form(context, related_obj: models.Model, **kwargs):
     """
     Renders "upload attachment" form for the related_object iff the user has permission.
@@ -38,7 +38,7 @@ def get_delete_link_context(context, attachment: AbstractAttachment, **kwargs):
     return {"delete_url": None}
 
 
-@register.inclusion_tag("attachments/delete_link.html", takes_context=True)
+@register.inclusion_tag("nifty/attachments/include/delete_link.html", takes_context=True)
 def attachment_delete_link(context, attachment: AbstractAttachment, **kwargs):
     """
     Renders a html link to the delete view of the given attachment iff the user has permission.
@@ -50,7 +50,7 @@ def attachment_delete_link(context, attachment: AbstractAttachment, **kwargs):
     return get_delete_link_context(context, attachment, **kwargs)
 
 
-@register.inclusion_tag("attachments/htmx/delete_link.html", takes_context=True)
+@register.inclusion_tag("nifty/attachments/htmx/delete_link.html", takes_context=True)
 def attachment_hx_delete_link(context, attachment: AbstractAttachment, **kwargs):
     """
     Renders a html link to the delete view of the given attachment iff the user has permission.
