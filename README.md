@@ -28,7 +28,7 @@ Re-wrote app top-to-bottom to accommodate HN use-cases.
 Installation:
 =============
 
-1. Put `attachments` to your `INSTALLED_APPS` in your `settings.py`
+1. Put `nifty_attachments` to your `INSTALLED_APPS` in your `settings.py`
    within your django project (to auto-detect templates and tags):
     ```
     INSTALLED_APPS = (
@@ -187,26 +187,27 @@ for your model objects in your frontend.
    list is stored in the template context (this is required in Django 1.8). If
    you do not define a variable name, the result is printed instead.
 
-    {% get_attachments_for entry as attachments_list %}
+       {% get_attachments_for entry as attachments_list %}
 
 2. `attachments_count [object]`: Counts the attachments for the given
    model instance and returns an int:
 
-    {% attachments_count entry %}
+       {% attachments_count entry %}
 
 3. `attachment_form`: Renders a upload form to add attachments for the given
    model instance. Example:
 
-    {% attachment_form [object] %}
+       {% attachment_form [object] %}
 
    It returns an empty string if the current user is not logged in.
+
 
 4. `attachment_delete_link`: Renders a link to the delete view for the given
    *attachment*. Example:
 
-    {% for att in attachments_list %}
-        {{ att }} {% attachment_delete_link att %}
-    {% endfor %}
+       {% for att in attachments_list %}
+           {{ att }} {% attachment_delete_link att %}
+       {% endfor %}
 
    This tag automatically checks for permission. It returns only a html link if the
    give n attachment's creator is the current logged in user or the user has the
@@ -253,6 +254,14 @@ Settings
   which will be executed against uploaded files. If any of them raises
   `ValidationError` the upload will be denied. **Empty by default**. See
   `attachments/tests/testapp/apps.py` for an example.
+
+
+Overriding Templates
+====================
+
+Templates can be overridden by commandeering the namespace of the default template. 
+To do this, create a `/nifty/attachments` directory in your app's templates directory,
+then override a template by creating a file matching the name of the default template.
 
 
 ---
