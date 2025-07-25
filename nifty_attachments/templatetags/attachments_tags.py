@@ -50,6 +50,7 @@ def attachment_delete_link(context, attachment: AbstractAttachment, **kwargs):
     return get_delete_link_context(context, attachment, **kwargs)
 
 
+# TODO: move to dveg-rt
 @register.inclusion_tag("nifty/attachments/htmx/delete_link.html", takes_context=True)
 def attachment_hx_delete_link(context, attachment: AbstractAttachment, **kwargs):
     """
