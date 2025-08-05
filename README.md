@@ -8,7 +8,7 @@ Version: 0.1.0
 
 *"Private" file attachments for a Django Model, with permissions-based access control and without Generic FK.*
 
-> This package is built on top of [django-attachments](https://github.com/atodorov/django-attachments), originally developed by [atadorov](https://github.com/atodorov).
+> This package is a re-write of [django-attachments](https://github.com/atodorov/django-attachments), originally developed by [atadorov](https://github.com/atodorov).
 
 > `django-nifty-attachments` is free software distributed under the MIT License.
 
@@ -16,12 +16,12 @@ Version: 0.1.0
 
 ## Adaptations:
 
-Re-wrote app top-to-bottom to accommodate HN use-cases.
+Re-wrote app top-to-bottom to accommodate strict access control and remove Generic FK, among others.
 
 1. Removed support for python2 & django<3, delete migrations, delete locale, delete admin, delete management command
 2. Remove Generic FK to "related object" , replace with "Model Factory" pattern,
    using Abstract Model and dependency inversion instead.
-3. Provide injectable permissions
+3. Provide injectable permissions with access control for private files
 4. Implement "app settings" pattern
 
 
@@ -37,13 +37,13 @@ Installation:
     )
     ```
 
-   2. Define a concrete Attachment model with relation to your related object:
-       ```
-       class GizmoAttachment(AbstractAttachment.factory("myapp.Gizmo")):
-           """ A concrete implementation of AbstractAttachment,
-                with a required FK named `related` to Gizmo with revers relation "attachment_set"
-           """
-       ```
+2. Define a concrete Attachment model with relation to your related object:
+    ```
+    class GizmoAttachment(AbstractAttachment.factory("myapp.Gizmo")):
+        """ A concrete implementation of AbstractAttachment,
+             with a required FK named `related` to Gizmo with reverse relation "attachment_set"
+        """
+    ```
 
 3. Add the attachments urlpattern to your `urls.py`, injecting your concrete attachment model:
     ```
@@ -98,17 +98,7 @@ Configuration
 * configure permissions: implement the interface defined by `AttachmentPermissionsApi`
   and set `permissions = MyAttachmentsPermissions()` on your concrete Attachment Model.
 
-
-Tests
-=====
-
-Run the testsuite in your local environment using `pipenv`:
-
-    $ cd django-attachments/
-    $ pipenv install --dev
-    $ pipenv run pytest attachments/
-
-
+  
 Usage:
 ======
 
@@ -121,13 +111,14 @@ You must explicitly define a Concrete Attachments model for each related model.
 3. if you provide a custom `Meta` options, it is highly recommended you extend the base Meta.
 
     ```
-    class GizmoAttachment(AbstractAttachment.factory("myapp.Gizmo"):
+    base_model = AbstractAttachment.factory("myapp.Gizmo")
+   class GizmoAttachment(base_model):
         ...
         class Meta(base_model.Meta)
             ...
     ```
 
-You can also inject custom permissions logic with any class that implements `AttachmentPermissions` Protocol.
+4. You can also inject custom permissions logic with any class that implements `AttachmentPermissions` Protocol.
 
     ```
     class GizmoPermissions(DefaultAttachmentPermissions):
@@ -148,7 +139,7 @@ You can also inject custom permissions logic with any class that implements `Att
 In your urls:
 -------------
 
-You need to run one namespaced instance of the attachments app for each concrete Model.
+You need one namespaced set of attachment urls for each concrete Model.
 * Include the `attachments.urls`, supplying an explicit namespace *if your app urls are not namespaced*.
 * Inject your concrete Attachment Model, either the Model class or an `app_label.ModelName` string.
 
@@ -184,8 +175,7 @@ for your model objects in your frontend.
 
 1. `get_attachments_for [object]`: Fetches the attachments for the given
    model instance. You can optionally define a variable name in which the attachment
-   list is stored in the template context (this is required in Django 1.8). If
-   you do not define a variable name, the result is printed instead.
+   list is stored in the template context. If you do not define a variable name, the result is printed instead.
 
        {% get_attachments_for entry as attachments_list %}
 
@@ -210,7 +200,7 @@ for your model objects in your frontend.
        {% endfor %}
 
    This tag automatically checks for permission. It returns only a html link if the
-   give n attachment's creator is the current logged in user or the user has the
+   given attachment's creator is the current logged in user or the user has the
    `delete_foreign_attachments` permission.
 
 Quick Example:
@@ -243,25 +233,25 @@ Quick Example:
     </ul>
     {% endif %}
 
-Settings
-========
-
-- `DELETE_ATTACHMENTS_FROM_DISK` will delete attachment files when the
-  attachment model is deleted. **Default False**!
-- `FILE_UPLOAD_MAX_SIZE` in bytes. Deny file uploads exceeding this value.
-  **Undefined by default**.
-- `AppConfig.attachment_validators` - a list of custom form validator functions
-  which will be executed against uploaded files. If any of them raises
-  `ValidationError` the upload will be denied. **Empty by default**. See
-  `attachments/tests/testapp/apps.py` for an example.
-
 
 Overriding Templates
 ====================
 
-Templates can be overridden by commandeering the namespace of the default template. 
+As usual, templates can be overridden by commandeering the namespace of the default template. 
 To do this, create a `/nifty/attachments` directory in your app's templates directory,
 then override a template by creating a file matching the name of the default template.
+Add a folder named for the `template_prefix`, as defined in `urls` config, for attachment type-specific templates. 
+
+Settings
+========
+
+- `ATTACHMENTS_FILE_UPLOAD_MAX_SIZE` in Mb. Deny file uploads exceeding this value.  Default: 10 Mb.
+- `ATTACHMENTS_CONTENT_TYPE_WHITELIST` iterable of content type strings. Deny file uploads other than these.
+     Default: `()` - no restrictions by content type.
+- `ATTACHMENTS_FILE_UPLOAD_VALIDATORS` - an iterable of custom file validator functions
+  executed against each uploaded file. If any of them raises `ValidationError` the upload will be denied. 
+  Default: `nifty_attachments.validators.default_validators`
+
 
 
 ---
@@ -281,3 +271,12 @@ and the [`cookiecutter-powder-pypackage`](https://github.com/JacobTumak/CookiePo
 Check out the [Dev Guide](https://github.com/powderflask/django-nifty-attachments/tree/main/dev-guide.md).
 
  * [GitHub Actions](https://docs.github.com/en/actions) (see [.github/workflows](https://github.com/powderflask/django-nifty-attachments/tree/main/.github/workflows))
+
+### Run Tests
+
+Run the testsuite in your local environment using `pipenv`:
+
+    $ cd django-attachments/
+    $ pipenv install --dev
+    $ pipenv run pytest attachments/
+
