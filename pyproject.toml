@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "django-nifty-attachments"
-version = "0.1.0"
+version = "0.1.1"
 requires-python = ">=3.10, <4.0"
 description = "A generic set of template tags to attach files to specific models."
 readme = "README.md"
@@ -68,7 +68,7 @@ include-package-data = true  # True by default, declarations in MANIFEST.in
 include = ["nifty_attachments", "nifty_attachments.*"]
 
 [tool.bumpver]
-current_version = "0.1.0"
+current_version = "0.1.1"
 version_pattern = "MAJOR.MINOR.PATCH"
 commit_message = "Bump version: {old_version} --> {new_version}"
 commit = true
