@@ -1,0 +1,18 @@
+{% load attachments_tags %}
+{% if request.user|can_change_attachment:attachment %}
+    <form method="post" action="{{ action_url }}">
+        {% csrf_token %}
+        {% if form %}
+            {{ form.as_p }}
+        {% else %}
+            <p>Error: No form provided.</p>
+        {% endif %}
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a href="{{ next }}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+{% else %}
+    <p>Permission Denied</p>
+{% endif %}

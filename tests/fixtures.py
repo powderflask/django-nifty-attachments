@@ -6,10 +6,12 @@ import importlib
 
 import pytest
 import pytest_django.fixtures
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 from django.views import View
 
 import nifty_attachments.settings
-from nifty_attachments.utils import get_permission_for_model
+from nifty_attachments.utils import get_model_class, get_permission_for_model
 
 from .factories import GizmoAttachmentFactory, UserFactory, UuidAttachmentFactory
 
@@ -19,25 +21,19 @@ class NoView(View):
         raise NotImplementedError(request.path)
 
 
-@pytest.fixture(autouse=True)
-def url_conf(settings):
-    # settings.ROOT_URLCONF = "tests.testapp.urls"
-    # Hack - add minimal DVM urls to allow the test suite to run in context of DVM project.  Remove when factored out.
-    from django.urls import include, path
+def add_perm(user, model, action):
 
-    from tests.testapp.urls import urlpatterns
+    # If it's a string, resolve it to a class first
+    if isinstance(model, str):
+        model = get_model_class(model)
 
-    urlconf = lambda: None
-    urlconf.urlpatterns = urlpatterns + [
-        # path("dvm/", include("dvm.urls")),
-        path("messages/", NoView.as_view(), name="messages"),  # messages route exists in 'base.html', so its faked
-    ]
-    settings.ROOT_URLCONF = urlconf
-
-
-def add_perm(user, attachment_model, action: str):
-    perm = get_permission_for_model(attachment_model, action)
+    ct = ContentType.objects.get_for_model(model)
+    codename = f"{action}_{model._meta.model_name.lower()}"
+    perm, _ = Permission.objects.get_or_create(content_type=ct, codename=codename)
     user.user_permissions.add(perm)
+
+    if hasattr(user, "_perm_cache"):
+        del user._perm_cache
 
 
 def remove_perm(user, attachment_model, action: str):

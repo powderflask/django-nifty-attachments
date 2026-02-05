@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import DetailView, TemplateView
 
-from .models import GizmoModel, ModelWithUuidPk
+from .models import Gizmo, ModelWithUuidPk
 
 admin.autodiscover()
 
@@ -13,7 +13,7 @@ gizmo_patters = [
         "<int:pk>/",
         DetailView.as_view(
             template_name="testapp_detail.html",
-            queryset=GizmoModel.objects.all(),
+            queryset=Gizmo.objects.all(),
         ),
         name="detail",
     ),

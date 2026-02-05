@@ -33,41 +33,67 @@ def get_perm_name_for_model(model: models.Model | type[models.Model], action: st
     return f"{model._meta.app_label}.{code}"
 
 
-def get_model_class(model: str | type[models.Model]) -> type[models.Model]:
-    """Resolve and return a model class from a "app_label.Model"dotted string"""
-    match model:
-        case str():
-            return apps.get_model(*model.split("."))  # type: ignore
-        case _:
-            assert issubclass(model, models.Model)
-            return model
+def get_model_class(model: str | models.Model | type[models.Model]) -> type[models.Model]:
+    if isinstance(model, models.Model):
+        return type(model)
+    if isinstance(model, str):
+        return apps.get_model(*model.split("."))
+    return model
 
 
-def get_attachment_model_from_related_object(related_object: models.Model) -> type[AbstractAttachment]:
-    """Introspect the related object for the Concrete Attachment model"""
+def get_attachment_model_from_related_object(related_input: str | models.Model) -> type[AbstractAttachment]:
+    """
+    Introspect the related object or a dotted path for the Concrete Attachment model.
+    """
+    # Handle explicit dotted path: "app.Model.relation"
+    if isinstance(related_input, str) and related_input.count(".") == 2:
+        model_path, relation_name = related_input.rsplit(".", 1)
+        parent_model = get_model_class(model_path)
+        try:
+            # We look for the related_model of the field (ForeignKey/GenericRel)
+            return parent_model._meta.get_field(relation_name).related_model
+        except Exception as e:
+            raise ValueError(f"Could not resolve relation '{relation_name}' on {parent_model._meta.label}: {e}")
+
+    # Handle Auto-discovery (Instance or "app.Model")
     from nifty_attachments.models import AbstractAttachment
 
-    if hasattr(related_object, "attachment_set"):
-        # Short-cut - if the default related_name is being uses, this is trivial.
-        return related_object.attachment_set.none().model
+    target_class = get_model_class(related_input)
 
-    related_model = type(related_object)
-
-    # Find the model classes for the fields which are subclass of A
     attachment_models = [
         field.related_model
-        for field in related_model._meta.get_fields()
-        if isinstance(field, models.ManyToOneRel) and issubclass(field.related_model, AbstractAttachment)
+        for field in target_class._meta.get_fields()
+        if isinstance(field, (models.ManyToOneRel, models.ManyToManyRel))
+        and field.related_model
+        and issubclass(field.related_model, AbstractAttachment)
     ]
-    if len(attachment_models) == 0:
-        raise ValueError(f"Related object {related_object} has no related attachments.")
-    elif len(attachment_models) > 1:
-        attachment_model_names = ", ".join(model.__name__ for model in attachment_models)
+
+    if len(attachment_models) == 1:
+        return attachment_models[0]
+
+    if len(attachment_models) > 1:
+        model_names = ", ".join(m.__name__ for m in attachment_models)
         raise ValueError(
-            f"Related object {related_object} has multiple related attachments: {attachment_model_names}."
+            f"Ambiguity: {target_class.__name__} has multiple attachment relations: {model_names}. "
+            f"Pass a dotted path: 'app.Model.relation_name'."
         )
 
-    return attachment_models[0]
+    raise ValueError(f"No attachment model found for {related_input}.")
+
+
+def get_attachment_model_for_relation_name(related_obj: models.Model, relation_name: str = None):
+    """
+    Helper to safely retrieve the attachment model for a specific instance.
+    """
+    try:
+        if relation_name:
+            # Uses _meta.label (e.g., 'myapp.Gizmo') to ensure get_model_class works perfectly
+            parent_path = related_obj._meta.label
+            return get_attachment_model_from_related_object(f"{parent_path}.{relation_name}")
+
+        return get_attachment_model_from_related_object(related_obj)
+    except Exception:
+        return None
 
 
 T = TypeVar("T")

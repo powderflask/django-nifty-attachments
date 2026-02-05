@@ -11,7 +11,8 @@ description = "A generic set of template tags to attach files to specific models
 readme = "README.md"
 license = {file = "LICENSE"}
 authors = [
-    { name = "Joseph Fall", email = "jfall@crgl.ca" }
+    { name = "Joseph Fall", email = "jfall@crgl.ca" },
+    { name = "Marc-Andre Descoteaux", email = "mdescoteaux@crgl.ca" },
 ]
 keywords = ["nifty_attachments",]
 classifiers = [
@@ -50,6 +51,7 @@ utils = [
     "pip-tools",
     "build",
     "twine",
+    "pre-commit",
 ]
 
 [project.urls]
