@@ -5,5 +5,4 @@ from .fixtures import (  # noqa: F401
     attachment_settings,
     get_user_factory,
     related_object,
-    url_conf,
 )

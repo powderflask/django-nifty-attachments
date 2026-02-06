@@ -23,13 +23,13 @@ class GizmoFactory(DjangoModelFactory):
     title = Faker("word")
 
     class Meta:
-        model = models.GizmoModel
+        model = models.Gizmo
 
 
 class AbstractAttachmentFactory(DjangoModelFactory):
     owner = SubFactory(UserFactory)
-    label = (Faker("word"),)
-    description = (Faker("paragraph"),)
+    label = Faker("word")
+    description = Faker("paragraph")
     name = Faker("file_name", category="image")
     content_type = factory.LazyAttribute(lambda obj: mimetypes.guess_type(obj.name)[0] or "text/plain")
     data = b"Binary file content"

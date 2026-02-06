@@ -9,7 +9,11 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from nifty_attachments.utils import class_service, get_model_class, get_perm_name_for_model
+from nifty_attachments.utils import (
+    class_service,
+    get_model_class,
+    get_perm_name_for_model,
+)
 
 User = get_user_model()
 
@@ -25,11 +29,11 @@ class AttachmentPermissions(Protocol):
         """Initialize permissions for the given concrete attachment_model."""
         ...
 
-    def can_add_attachments(self, user: User, related_to: models.Model) -> bool:
+    def can_add_attachments(self, user: User, related_to: models.Model | None) -> bool:
         """Return True iff the user can upload new attachments for the related object"""
         ...
 
-    def can_view_attachments(self, user: User, related_to: models.Model) -> bool:
+    def can_view_attachments(self, user: User, related_to: models.Model | None) -> bool:
         """Return True iff the user can view attachments for the related object"""
         ...
 
@@ -53,23 +57,27 @@ class DefaultAttachmentPermissions:
         """shortcut to check permission based on action name"""
         return user.has_perm(get_perm_name_for_model(self.attachment_model, action))
 
-    def can_add_attachments(self, user: User, related_to: models.Model) -> bool:
+    def can_add_attachments(self, user: User, related_to: models.Model | None) -> bool:
         """Return True iff the user can upload new attachments to given related object"""
         return self.has_perm(user, "add")
 
-    def can_view_attachments(self, user: User, related_to: models.Model) -> bool:
+    def can_view_attachments(self, user: User, related_to: models.Model | None) -> bool:
         """Return True iff the user can view attachments for given related object"""
         return self.has_perm(user, "view")
 
     def can_change_attachment(self, user: User, attachment: AbstractAttachment) -> bool:
         """Return True iff the user can edit the existing attachment"""
         has_base_perm = self.has_perm(user, "change")
-        return has_base_perm if user.pk == attachment.owner_id else has_base_perm and self.has_perm(user, "edit_any")
+        if user.pk == attachment.owner_id:
+            return has_base_perm
+        return has_base_perm and self.has_perm(user, "edit_any")
 
     def can_delete_attachment(self, user: User, attachment: AbstractAttachment) -> bool:
         """Return True iff the user can delete the attachment"""
         has_base_perm = self.has_perm(user, "delete")
-        return has_base_perm if user.pk == attachment.owner_id else has_base_perm and self.has_perm(user, "edit_any")
+        if user.pk == attachment.owner_id:
+            return has_base_perm
+        return has_base_perm and self.has_perm(user, "edit_any")
 
 
 def create_attachment(

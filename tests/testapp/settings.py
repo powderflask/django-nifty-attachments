@@ -92,3 +92,4 @@ TEMPLATES = [
 
 # Configure testapp Attachment settings
 ATTACHMENTS_FILE_UPLOAD_VALIDATORS = "tests.testapp.validators.testapp_validators"
+ATTACHMENTS_CONTENT_TYPE_WHITELIST = FILE_UPLOAD_CONTENT_TYPES = ()
