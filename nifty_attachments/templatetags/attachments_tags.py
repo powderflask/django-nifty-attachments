@@ -19,6 +19,9 @@ register = Library()
 def attachment_form(context: dict[str, Any], related_obj: models.Model, relation_name: str = None, **kwargs):
     """
     Renders "upload attachment" form for a specific model instance iff user has permission.
+    Usage:
+
+        {% attachment_form obj %}
     """
     if not isinstance(related_obj, models.Model):
         return {"form": None}
@@ -36,6 +39,17 @@ def attachment_form(context: dict[str, Any], related_obj: models.Model, relation
             "next": kwargs.get("next", context.request.build_absolute_uri()),
         }
     return {"form": None}
+
+@register.inclusion_tag("nifty/attachments/include/delete_link.html", takes_context=True)
+def attachment_delete_link(context, attachment: AbstractAttachment, **kwargs):
+    """Renders delete link for a specific attachment instance."""
+    if not isinstance(attachment, models.Model) or not attachment.can_delete_attachment(context.get("user")):
+        return {"delete_url": None}
+
+    return {
+        "next": kwargs.get("next", context.request.build_absolute_uri()),
+        "delete_url": attachment.get_delete_url(),
+    }
 
 
 @register.simple_tag
@@ -58,6 +72,9 @@ def attachment_set(related_obj: models.Model, relation_name: str = None):
     """
     Returns a QuerySet of attachments.
     Default relation_name: 'attachment_set'
+    Usage:
+        {% for attachment in obj|attachment_set %}
+        {% for attachment in obj|attachment_set:'attached_notes' %}
     """
     if related_obj is None:
         return []
@@ -71,7 +88,13 @@ def attachment_set(related_obj: models.Model, relation_name: str = None):
 
 @register.filter
 def attachment_upload_url(related_obj: models.Model, relation_name=None):
-    """Returns the upload URL for a model's attachments"""
+    """
+    Returns the "create" attachment endpoint url for the given related object.
+
+    Usage:
+
+        href="{{ obj|attachment_upload_url }}"
+    """
     attachment_model = get_attachment_model_for_relation_name(related_obj, relation_name)
     if not attachment_model:
         return "/400"
@@ -81,6 +104,7 @@ def attachment_upload_url(related_obj: models.Model, relation_name=None):
 @register.filter
 def can_add_attachment(user: User, related_obj: str | models.Model) -> bool:
     """
+    Return True iff the user can create an attachment for the related_obj
     Usage:
     # uses default attachment relation: attachment_set
     {% if request.user|can_add_attachment:object %}
@@ -99,6 +123,7 @@ def can_add_attachment(user: User, related_obj: str | models.Model) -> bool:
 
 @register.filter
 def can_change_attachment(user: User, attachment: AbstractAttachment):
+    """Return True iff the user can edit the existing attachment"""
     if not user or not attachment or isinstance(attachment, str):
         return False
     return attachment.can_change_attachment(user)
@@ -106,18 +131,9 @@ def can_change_attachment(user: User, attachment: AbstractAttachment):
 
 @register.filter
 def can_delete_attachment(user: User, attachment: AbstractAttachment):
+    """Return True iff the user can delete the attachment"""
     if not user or not attachment or isinstance(attachment, str):
         return False
     return attachment.can_delete_attachment(user)
 
 
-@register.inclusion_tag("nifty/attachments/include/delete_link.html", takes_context=True)
-def attachment_delete_link(context, attachment: AbstractAttachment, **kwargs):
-    """Renders delete link for a specific attachment instance."""
-    if not isinstance(attachment, models.Model) or not attachment.can_delete_attachment(context.get("user")):
-        return {"delete_url": None}
-
-    return {
-        "next": kwargs.get("next", context.request.build_absolute_uri()),
-        "delete_url": attachment.get_delete_url(),
-    }

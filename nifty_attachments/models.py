@@ -50,25 +50,30 @@ class DefaultAttachmentPermissions:
     """Default attachment permissions based on standard Model permissions for concrete model"""
 
     def __init__(self, attachment_model: type[AbstractAttachment]):
+        """Base permissions on standard django Model permissions for given concrete attachment_model."""
         self.attachment_model = attachment_model
 
     def has_perm(self, user: User, action: str) -> bool:
+        """shortcut to check permission based on action name"""
         return user.has_perm(get_perm_name_for_model(self.attachment_model, action))
 
     def can_add_attachments(self, user: User, related_to: models.Model | None) -> bool:
-        """User can upload if they have 'add' permission. related_to may be None."""
+        """Return True iff the user can upload new attachments to given related object"""
         return self.has_perm(user, "add")
 
     def can_view_attachments(self, user: User, related_to: models.Model | None) -> bool:
+        """Return True iff the user can view attachments for given related object"""
         return self.has_perm(user, "view")
 
     def can_change_attachment(self, user: User, attachment: AbstractAttachment) -> bool:
+        """Return True iff the user can edit the existing attachment"""
         has_base_perm = self.has_perm(user, "change")
         if user.pk == attachment.owner_id:
             return has_base_perm
         return has_base_perm and self.has_perm(user, "edit_any")
 
     def can_delete_attachment(self, user: User, attachment: AbstractAttachment) -> bool:
+        """Return True iff the user can delete the attachment"""
         has_base_perm = self.has_perm(user, "delete")
         if user.pk == attachment.owner_id:
             return has_base_perm
@@ -187,7 +192,7 @@ class AbstractAttachment(models.Model):
         try:
             return self.related_object.get_absolute_url()
         except AttributeError:
-            return None  # none is an odd choice here. "/" would be more reasonable?
+            return None
 
     @classmethod
     def get_upload_url_for_obj(cls, related_object: models.Model):

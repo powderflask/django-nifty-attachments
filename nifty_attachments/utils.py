@@ -34,6 +34,7 @@ def get_perm_name_for_model(model: models.Model | type[models.Model], action: st
 
 
 def get_model_class(model: str | models.Model | type[models.Model]) -> type[models.Model]:
+    """Resolve and return a model class from a "app_label.Model"dotted string"""
     if isinstance(model, models.Model):
         return type(model)
     if isinstance(model, str):
@@ -43,7 +44,7 @@ def get_model_class(model: str | models.Model | type[models.Model]) -> type[mode
 
 def get_attachment_model_from_related_object(related_input: str | models.Model) -> type[AbstractAttachment]:
     """
-    Introspect the related object or a dotted path for the Concrete Attachment model.
+    Introspect the related object or a dotted path ("app_label.RelatedModelClass.related_attachment_name") for the Concrete Attachment model.
     """
     # Handle explicit dotted path: "app.Model.relation"
     if isinstance(related_input, str) and related_input.count(".") == 2:
