@@ -1,5 +1,6 @@
-from invoke import task
 from pathlib import Path
+
+from invoke import task
 
 
 @task
@@ -25,7 +26,9 @@ def venv(c, dir_name=".venv", force=False):
     Initialize the development environment for this project.
     """
     if not force and Path(dir_name).exists():
-        choice = input("The directory `.venv` already exists. Would you like to overwrite it? [y/N]\n")
+        choice = input(
+            "The directory `.venv` already exists. Would you like to overwrite it? [y/N]\n"
+        )
         if choice.lower() != "y":
             return
     c.run(f"tox d -e dev {dir_name}")

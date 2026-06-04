@@ -21,7 +21,9 @@ ModelFormType = TypeVar("ModelFormType", bound=type[forms.ModelForm])
 
 
 class AttachmentUploadForm(forms.Form):
-    attachment_file = forms.FileField(label=_("Upload attachment"), validators=validators)
+    attachment_file = forms.FileField(
+        label=_("Upload attachment"), validators=validators
+    )
 
 
 class AbstractModelForm(forms.ModelForm):

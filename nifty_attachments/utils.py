@@ -20,11 +20,14 @@ def get_permission_for_model(model: type[models.Model], action: str) -> Permissi
     return a permission object for given action, e.g., "add", "change", on a given Django model
     """
     return Permission.objects.get(
-        content_type=ContentType.objects.get_for_model(model), codename=get_permission_codename(action, model._meta)
+        content_type=ContentType.objects.get_for_model(model),
+        codename=get_permission_codename(action, model._meta),
     )
 
 
-def get_perm_name_for_model(model: models.Model | type[models.Model], action: str) -> str:
+def get_perm_name_for_model(
+    model: models.Model | type[models.Model], action: str
+) -> str:
     """
     return a qualified permission name, 'app_label.action_model' for given action,
     e.g., "add", "change", on a given Django model
@@ -33,7 +36,9 @@ def get_perm_name_for_model(model: models.Model | type[models.Model], action: st
     return f"{model._meta.app_label}.{code}"
 
 
-def get_model_class(model: str | models.Model | type[models.Model]) -> type[models.Model]:
+def get_model_class(
+    model: str | models.Model | type[models.Model],
+) -> type[models.Model]:
     """Resolve and return a model class from a "app_label.Model"dotted string"""
     if isinstance(model, models.Model):
         return type(model)
@@ -42,7 +47,9 @@ def get_model_class(model: str | models.Model | type[models.Model]) -> type[mode
     return model
 
 
-def get_attachment_model_from_related_object(related_input: str | models.Model) -> type[AbstractAttachment]:
+def get_attachment_model_from_related_object(
+    related_input: str | models.Model,
+) -> type[AbstractAttachment]:
     """
     Introspect the related object or a dotted path ("app_label.RelatedModelClass.related_attachment_name") for the Concrete Attachment model.
     """
@@ -54,7 +61,9 @@ def get_attachment_model_from_related_object(related_input: str | models.Model) 
             # We look for the related_model of the field (ForeignKey/GenericRel)
             return parent_model._meta.get_field(relation_name).related_model
         except Exception as e:
-            raise ValueError(f"Could not resolve relation '{relation_name}' on {parent_model._meta.label}: {e}")
+            raise ValueError(
+                f"Could not resolve relation '{relation_name}' on {parent_model._meta.label}: {e}"
+            )
 
     # Handle Auto-discovery (Instance or "app.Model")
     from nifty_attachments.models import AbstractAttachment
@@ -82,7 +91,9 @@ def get_attachment_model_from_related_object(related_input: str | models.Model) 
     raise ValueError(f"No attachment model found for {related_input}.")
 
 
-def get_attachment_model_for_relation_name(related_obj: models.Model, relation_name: str = None):
+def get_attachment_model_for_relation_name(
+    related_obj: models.Model, relation_name: str = None
+):
     """
     Helper to safely retrieve the attachment model for a specific instance.
     """
@@ -90,7 +101,9 @@ def get_attachment_model_for_relation_name(related_obj: models.Model, relation_n
         if relation_name:
             # Uses _meta.label (e.g., 'myapp.Gizmo') to ensure get_model_class works perfectly
             parent_path = related_obj._meta.label
-            return get_attachment_model_from_related_object(f"{parent_path}.{relation_name}")
+            return get_attachment_model_from_related_object(
+                f"{parent_path}.{relation_name}"
+            )
 
         return get_attachment_model_from_related_object(related_obj)
     except Exception:
@@ -144,5 +157,9 @@ def class_service(service_class, **kwargs):
     specialized_service = type(service_class.__name__, (service_class,), kwargs)
 
     descriptor_name = f"{service_class.__name__}ClassService"
-    descriptor = type(descriptor_name, (ClassServiceDescriptor,), dict(service_class=specialized_service))
+    descriptor = type(
+        descriptor_name,
+        (ClassServiceDescriptor,),
+        dict(service_class=specialized_service),
+    )
     return descriptor

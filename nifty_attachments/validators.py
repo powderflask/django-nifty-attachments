@@ -37,7 +37,9 @@ def validate_file_content_type(file: File, whitelist=()):
         return
     if ct not in content_types:
         raise forms.ValidationError(
-            _("File type {ct} not supported. Supported types: {supported}.").format(ct=ct, supported=content_types)
+            _("File type {ct} not supported. Supported types: {supported}.").format(
+                ct=ct, supported=content_types
+            )
         )
 
 

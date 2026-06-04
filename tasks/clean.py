@@ -1,7 +1,12 @@
 from invoke import task
+
 import tasks.docs as docs_task
 
-get_args = lambda c, section: (c, c.config.clean[section].cleans, c.config.clean[section].paths)
+get_args = lambda c, section: (
+    c,
+    c.config.clean[section].cleans,
+    c.config.clean[section].paths,
+)
 
 
 def clean_files(c, cleans: str, paths: list[str]):

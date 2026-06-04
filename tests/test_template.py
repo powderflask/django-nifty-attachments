@@ -48,7 +48,9 @@ def test_detail_view_attachment_integration(client, attachment_model, attachment
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("has_perm_logic", [True, False])
-def test_upload_form_visibility_logic(client, attachment_model, attachment, has_perm_logic):
+def test_upload_form_visibility_logic(
+    client, attachment_model, attachment, has_perm_logic
+):
     user = attachment.owner
     obj = attachment.related_object
 
@@ -75,7 +77,9 @@ def test_upload_form_visibility_logic(client, attachment_model, attachment, has_
 
 
 @pytest.mark.django_db
-def test_can_add_attachment_comprehensive(get_user_factory, attachment_model, attachment):
+def test_can_add_attachment_comprehensive(
+    get_user_factory, attachment_model, attachment
+):
     """Covers instance path, dotted path, and relation names in one flow."""
     user = get_user_factory(perms=(), is_superuser=False)
     obj = attachment.related_object
@@ -166,7 +170,9 @@ class TestTagFailPaths:
         assert attachment_form({}, "not-a-model") == {"form": None}
 
         # 2. Invalid relation name (get_attachment_model_for_relation_name returns None)
-        assert attachment_form({}, attachment.related_object, relation_name="fake_rel") == {"form": None}
+        assert attachment_form(
+            {}, attachment.related_object, relation_name="fake_rel"
+        ) == {"form": None}
 
     def test_attachments_count_fail_fast(self):
 
@@ -179,12 +185,17 @@ class TestTagFailPaths:
         assert attachment_set(None) == []
 
         # 2. Invalid relation name
-        assert attachment_set(attachment.related_object, relation_name="invalid_rel") == []
+        assert (
+            attachment_set(attachment.related_object, relation_name="invalid_rel") == []
+        )
 
     def test_attachment_upload_url_fail_fast(self, attachment):
 
         # Invalid relation/model results in /400
-        assert attachment_upload_url(attachment.related_object, relation_name="bad_rel") == "/400"
+        assert (
+            attachment_upload_url(attachment.related_object, relation_name="bad_rel")
+            == "/400"
+        )
         assert attachment_upload_url(None) == "/400"
 
 

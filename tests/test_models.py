@@ -12,7 +12,9 @@ from .fixtures import add_perm
 def test_attachment_resolution_by_string(attachment_model, attachment):
     instance = attachment.related_object
     # Dynamically find the related_name from the FK field we injected in factory
-    relation_name = attachment_model._meta.get_field("related_object").remote_field.related_name
+    relation_name = attachment_model._meta.get_field(
+        "related_object"
+    ).remote_field.related_name
 
     app_label = instance._meta.app_label
     model_name = instance._meta.model_name
@@ -26,14 +28,19 @@ def test_attachment_resolution_by_string(attachment_model, attachment):
 def test_attachment_model(attachment_model, attachment):
     instances = attachment_model.objects.all()
     assert instances.count() == 1
-    assert isinstance(instances.first().related_object, attachment_model.get_related_model())
+    assert isinstance(
+        instances.first().related_object, attachment_model.get_related_model()
+    )
 
 
 @pytest.mark.django_db
 def test_attachment_owner_permissions(attachment_model, attachment):
     instance = attachment_model.objects.first()
 
-    assert attachment_model.can_view_attachments(instance.owner, instance.related_object) is True
+    assert (
+        attachment_model.can_view_attachments(instance.owner, instance.related_object)
+        is True
+    )
     assert attachment_model.can_view_attachments(instance.owner, None) is True
 
     assert instance.can_change_attachment(instance.owner) is False
@@ -106,5 +113,7 @@ def test_attachment_other_permissions(attachment_model, attachment, get_user_fac
 
 @pytest.mark.django_db
 def test_get_related_absolute_url_fallback(attachment):
-    attachment.related_object.get_absolute_url = MagicMock(side_effect=AttributeError("Simulated missing method"))
+    attachment.related_object.get_absolute_url = MagicMock(
+        side_effect=AttributeError("Simulated missing method")
+    )
     assert attachment.get_related_absolute_url() is None

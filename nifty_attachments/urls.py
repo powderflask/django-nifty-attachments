@@ -21,8 +21,20 @@ app_name = "attachments"
 
 urlpatterns = [
     path("add-for/<slug:pk>/", views.add_attachment, name="create"),
-    path("download-for/<slug:pk>/<int:attachment_pk>/", views.download_attachment, name="download"),
-    path("update-for/<slug:pk>/<int:attachment_pk>/", views.update_attachment, name="update"),
-    path("delete-for/<slug:pk>/<int:attachment_pk>/", views.delete_attachment, name="delete"),
+    path(
+        "download-for/<slug:pk>/<int:attachment_pk>/",
+        views.download_attachment,
+        name="download",
+    ),
+    path(
+        "update-for/<slug:pk>/<int:attachment_pk>/",
+        views.update_attachment,
+        name="update",
+    ),
+    path(
+        "delete-for/<slug:pk>/<int:attachment_pk>/",
+        views.delete_attachment,
+        name="delete",
+    ),
     path("list-for/<slug:pk>/", views.list_attachments, name="list"),
 ]

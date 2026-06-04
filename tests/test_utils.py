@@ -1,4 +1,4 @@
-""" Unit tests for attachments.utils """
+"""Unit tests for attachments.utils"""
 
 import pytest
 from django.contrib.auth.models import Permission
@@ -46,7 +46,9 @@ def test_get_model_class():
 
 
 @pytest.mark.django_db
-def test_get_attachment_model_from_related_object_by_instance(attachment_model, attachment):
+def test_get_attachment_model_from_related_object_by_instance(
+    attachment_model, attachment
+):
     """Scenario 1: Standard resolution using a model instance."""
     related_object = attachment.related_object
     model = get_attachment_model_from_related_object(related_object)
@@ -62,10 +64,14 @@ def test_get_attachment_model_from_related_object_by_class_string(attachment_mod
 
 
 @pytest.mark.django_db
-def test_get_attachment_model_from_related_object_by_relation_path(attachment_model, attachment):
+def test_get_attachment_model_from_related_object_by_relation_path(
+    attachment_model, attachment
+):
     parent_model = attachment_model.get_related_model()
     # Again, find the name dynamically
-    relation_name = attachment_model._meta.get_field("related_object").remote_field.related_name
+    relation_name = attachment_model._meta.get_field(
+        "related_object"
+    ).remote_field.related_name
 
     path = f"{parent_model._meta.app_label}.{parent_model._meta.model_name}.{relation_name}"
 
@@ -84,7 +90,9 @@ def test_get_attachment_model_ambiguity_error(attachment_model):
     # This assumes MultiAttachmentGizmo is set up with two different
     # concrete attachment models in your test app.
     with pytest.raises(ValueError) as excinfo:
-        get_attachment_model_from_related_object("attachments_testapp.MultiAttachmentGizmo")
+        get_attachment_model_from_related_object(
+            "attachments_testapp.MultiAttachmentGizmo"
+        )
 
     assert "multiple attachment relations" in str(excinfo.value)
 
@@ -94,7 +102,9 @@ def test_get_attachment_model_invalid_path():
     """Verify error handling for invalid relation strings."""
     with pytest.raises(ValueError):
         # Correct app.Model but non-existent relation
-        get_attachment_model_from_related_object("attachments_testapp.Gizmo.wrong_relation")
+        get_attachment_model_from_related_object(
+            "attachments_testapp.Gizmo.wrong_relation"
+        )
 
 
 @pytest.mark.django_db

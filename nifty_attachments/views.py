@@ -37,7 +37,11 @@ class AttachmentViewMixin:
 
     @cached_property
     def attachment(self):
-        return get_object_or_404(self.model, pk=self.attachment_pk) if self.attachment_pk is not None else None
+        return (
+            get_object_or_404(self.model, pk=self.attachment_pk)
+            if self.attachment_pk is not None
+            else None
+        )
 
     @cached_property
     def related_obj(self):
@@ -45,8 +49,12 @@ class AttachmentViewMixin:
         return get_object_or_404(self.model.get_related_model(), pk=self.related_obj_pk)
 
     def invalid_request(self):
-        if self.attachment and str(self.attachment.related_object_id) != str(self.related_obj_pk):
-            return HttpResponseBadRequest(_("Invalid request: Inconsistent attachment related object."))
+        if self.attachment and str(self.attachment.related_object_id) != str(
+            self.related_obj_pk
+        ):
+            return HttpResponseBadRequest(
+                _("Invalid request: Inconsistent attachment related object.")
+            )
 
 
 def prefix_template(default_template_name):
@@ -100,13 +108,17 @@ def add_attachment(
 
 @require_GET
 @login_required
-def download_attachment(request, pk, model: str | type[models.AbstractAttachment], attachment_pk):
+def download_attachment(
+    request, pk, model: str | type[models.AbstractAttachment], attachment_pk
+):
     view = AttachmentViewMixin(request, pk, model, attachment_pk)
 
     if not view.model.can_view_attachments(request.user, view.related_obj):
         raise PermissionDenied()
 
-    response = http.FileResponse((view.attachment.data,), as_attachment=True, filename=view.attachment.name)
+    response = http.FileResponse(
+        (view.attachment.data,), as_attachment=True, filename=view.attachment.name
+    )
     response["Content-Type"] = view.attachment.content_type
     response["Content-Disposition"] = 'attachment; filename="%s"' % view.attachment.name
     response["Content-Length"] = str(view.attachment.size)
@@ -124,7 +136,10 @@ def list_attachments(request, pk, model, template_name, extra_context=None):
         raise PermissionDenied()
 
     # Dynamically find the relation (e.g., 'attachment_set' vs 'invoices')
-    rel_name = view.model._meta.get_field("related_object").remote_field.related_name or "attachment_set"
+    rel_name = (
+        view.model._meta.get_field("related_object").remote_field.related_name
+        or "attachment_set"
+    )
     attachments = getattr(view.related_obj, rel_name).all()
 
     template_context = {
@@ -138,7 +153,15 @@ def list_attachments(request, pk, model, template_name, extra_context=None):
 @require_http_methods(["GET", "POST", "PUT"])
 @login_required
 @prefix_template("nifty/attachments/edit.html")
-def update_attachment(request, pk, model, attachment_pk, template_name, form_class=None, extra_context=None):
+def update_attachment(
+    request,
+    pk,
+    model,
+    attachment_pk,
+    template_name,
+    form_class=None,
+    extra_context=None,
+):
     view = AttachmentViewMixin(request, pk, model, attachment_pk)
 
     if not view.attachment.can_change_attachment(request.user):
@@ -170,7 +193,9 @@ def update_attachment(request, pk, model, attachment_pk, template_name, form_cla
 
 @require_http_methods(["POST", "DELETE"])
 @login_required
-def delete_attachment(request, pk, model: str | type[models.AbstractAttachment], attachment_pk):
+def delete_attachment(
+    request, pk, model: str | type[models.AbstractAttachment], attachment_pk
+):
     view = AttachmentViewMixin(request, pk, model, attachment_pk)
 
     if not view.attachment.can_delete_attachment(request.user):

@@ -31,7 +31,9 @@ class AbstractAttachmentFactory(DjangoModelFactory):
     label = Faker("word")
     description = Faker("paragraph")
     name = Faker("file_name", category="image")
-    content_type = factory.LazyAttribute(lambda obj: mimetypes.guess_type(obj.name)[0] or "text/plain")
+    content_type = factory.LazyAttribute(
+        lambda obj: mimetypes.guess_type(obj.name)[0] or "text/plain"
+    )
     data = b"Binary file content"
     size = factory.LazyAttribute(lambda obj: len(obj.data))
 

@@ -112,26 +112,43 @@ class AbstractAttachment(models.Model):
     Use `factory` classmethod to inject the related model and custom permissions dependencies.
     """
 
-    owner = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name="+")
+    owner = models.ForeignKey(
+        User, null=True, on_delete=models.SET_NULL, related_name="+"
+    )
     label = models.CharField(
         max_length=250,
         verbose_name=_("Document Label"),
         help_text=_("Title of this document, displayed as download link text."),
     )
     description = models.TextField(
-        blank=True, default="", help_text=_("Optional description of file contents, displayed with download links.")
+        blank=True,
+        default="",
+        help_text=_(
+            "Optional description of file contents, displayed with download links."
+        ),
     )
-    timestamp = models.DateTimeField(default=timezone.now, editable=False, verbose_name=_("Uploaded on"))
-    name = models.CharField(max_length=255, help_text=_("Original filename of the Uploaded File."))
-    size = models.IntegerField(help_text=_("Size, in bytes, of the original Uploaded File."))
+    timestamp = models.DateTimeField(
+        default=timezone.now, editable=False, verbose_name=_("Uploaded on")
+    )
+    name = models.CharField(
+        max_length=255, help_text=_("Original filename of the Uploaded File.")
+    )
+    size = models.IntegerField(
+        help_text=_("Size, in bytes, of the original Uploaded File.")
+    )
     content_type = models.CharField(
-        max_length=150, help_text=_("The content-type header uploaded with the original Uploaded File.")
+        max_length=150,
+        help_text=_(
+            "The content-type header uploaded with the original Uploaded File."
+        ),
     )
     data = models.BinaryField()
 
     related_object = None  # a FK injected when concrete attachment model is defined.
     _related_model = None  # shortcut to model class for related_object, injected
-    url_namespace = "attachments"  # alternate namespace for concreate attachment urls, injected
+    url_namespace = (
+        "attachments"  # alternate namespace for concreate attachment urls, injected
+    )
     permissions = None  # a AttachmentPermissions instance, injected.
 
     class Meta:
@@ -156,7 +173,9 @@ class AbstractAttachment(models.Model):
             _related_model = related_model
             url_namespace = _url_namespace
 
-            related_object = models.ForeignKey(related_model, related_name=related_name, **kwargs)
+            related_object = models.ForeignKey(
+                related_model, related_name=related_name, **kwargs
+            )
 
             permissions = class_service(permissions_class)()
 
@@ -199,13 +218,20 @@ class AbstractAttachment(models.Model):
         return reverse(f"{cls.get_url_namespace()}:create", args=(related_object.pk,))
 
     def get_download_url(self):
-        return reverse(f"{self.get_url_namespace()}:download", args=(self.related_object_id, self.pk))  # noqa
+        return reverse(
+            f"{self.get_url_namespace()}:download",
+            args=(self.related_object_id, self.pk),
+        )  # noqa
 
     def get_delete_url(self):
-        return reverse(f"{self.get_url_namespace()}:delete", args=(self.related_object_id, self.pk))  # noqa
+        return reverse(
+            f"{self.get_url_namespace()}:delete", args=(self.related_object_id, self.pk)
+        )  # noqa
 
     def get_update_url(self):
-        return reverse(f"{self.get_url_namespace()}:update", args=(self.related_object_id, self.pk))  # noqa
+        return reverse(
+            f"{self.get_url_namespace()}:update", args=(self.related_object_id, self.pk)
+        )  # noqa
 
     # Simple API for permissions logic.  Prefer to override permissions rather than these methods
 

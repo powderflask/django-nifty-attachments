@@ -17,7 +17,9 @@ class Gizmo(models.Model):
         return reverse("gizmo:detail", args=(self.pk,))
 
 
-class GizmoAttachment(AbstractAttachment.factory(Gizmo, url_namespace="gizmo:attachments")):
+class GizmoAttachment(
+    AbstractAttachment.factory(Gizmo, url_namespace="gizmo:attachments")
+):
     class Meta:
         app_label = "attachments_testapp"
 
@@ -39,9 +41,9 @@ class UuidPermissions(DefaultAttachmentPermissions):
         """Return True iff the user can upload new attachments to the given related object"""
         code = get_permission_codename("add", ModelWithUuidPk._meta)
 
-        return user.has_perm(f"{ModelWithUuidPk._meta.app_label}.{code}") and super().can_add_attachments(
-            user, related_to
-        )
+        return user.has_perm(
+            f"{ModelWithUuidPk._meta.app_label}.{code}"
+        ) and super().can_add_attachments(user, related_to)
 
 
 base_attachment_model = AbstractAttachment.factory(
@@ -63,12 +65,20 @@ class MultiAttachmentGizmo(models.Model):
 
 
 # Relation 1: Invoices
-class InvoiceAttachment(AbstractAttachment.factory(related_model=MultiAttachmentGizmo, related_name="invoices")):
+class InvoiceAttachment(
+    AbstractAttachment.factory(
+        related_model=MultiAttachmentGizmo, related_name="invoices"
+    )
+):
     class Meta:
         app_label = "attachments_testapp"
 
 
 # Relation 2: Blueprints
-class BlueprintAttachment(AbstractAttachment.factory(related_model=MultiAttachmentGizmo, related_name="blueprints")):
+class BlueprintAttachment(
+    AbstractAttachment.factory(
+        related_model=MultiAttachmentGizmo, related_name="blueprints"
+    )
+):
     class Meta:
         app_label = "attachments_testapp"

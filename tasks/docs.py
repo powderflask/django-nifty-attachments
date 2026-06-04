@@ -1,7 +1,6 @@
 from pathlib import Path
-from pprint import pprint
 
-from invoke import task, Config
+from invoke import Config, task
 
 
 def require_docs_enabled(c):
@@ -10,10 +9,9 @@ def require_docs_enabled(c):
             return
         case False:
             print(
-                "\033[33m"
-                "This task requires `docs.enabled` to be set to `True`.",
+                "\033[33m" "This task requires `docs.enabled` to be set to `True`.",
                 "To enable this task, set `docs.enabled: True` in your invoke.yaml file"
-                "\033[0m"
+                "\033[0m",
             )
         case _:
             print(
@@ -44,11 +42,13 @@ def release(c):
     """Push docs to GitHub, triggering webhook to build Read The Docs"""
     c.run("git push")
 
+
 def mark_if_disabled(*tasks):
     _conf = Config(project_location=Path(__file__).parent.parent)
     _conf.load_project()
     if not _conf.docs.enabled:
         for func in tasks:
             func.__doc__ = "\033[31m[disabled]\033[0m " + func.__doc__
+
 
 mark_if_disabled(clean, build, release)

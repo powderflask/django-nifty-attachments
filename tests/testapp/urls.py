@@ -8,7 +8,11 @@ admin.autodiscover()
 
 
 gizmo_patters = [
-    path("attachments/", include("nifty_attachments.urls"), kwargs=dict(model="attachments_testapp.GizmoAttachment")),
+    path(
+        "attachments/",
+        include("nifty_attachments.urls"),
+        kwargs=dict(model="attachments_testapp.GizmoAttachment"),
+    ),
     path(
         "<int:pk>/",
         DetailView.as_view(
@@ -21,7 +25,9 @@ gizmo_patters = [
 
 
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="testapp_home.html"), name="home"),  # placeholder
+    path(
+        "", TemplateView.as_view(template_name="testapp_home.html"), name="home"
+    ),  # placeholder
     path("auth/", include("django.contrib.auth.urls")),  # for redirect - not needed.
     path("admin/", admin.site.urls),
     # use nested namespacing (pass namespace, gizmo:attachments, to Attachment model factory)

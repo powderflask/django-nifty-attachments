@@ -16,7 +16,9 @@ def test_validate_file_content_type_success():
 
 def test_validate_file_content_type_invalid_raises_error():
     """Raises ValidationError when the content type is not supported."""
-    file = SimpleUploadedFile("test.exe", b"content", content_type="application/x-msdownload")
+    file = SimpleUploadedFile(
+        "test.exe", b"content", content_type="application/x-msdownload"
+    )
 
     with pytest.raises(forms.ValidationError) as excinfo:
         validate_file_content_type(file, whitelist=("image/png", "application/pdf"))
